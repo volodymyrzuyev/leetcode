@@ -3,6 +3,7 @@ package RemoveKDigits
 import (
 	"fmt"
 	"math"
+	"strings"
 )
 
 func makeInt(num string) int {
@@ -20,34 +21,19 @@ func makeInt(num string) int {
 }
 
 func removeKdigits(num string, k int) string {
-	numInt := makeInt(num)
-
-	return fmt.Sprintf("%d", recurse(numInt, k))
-
-}
-
-func recurse(num, k int) int {
-	if k == 0 || num == 0 {
-		return num
+	if k == 0 {
+		return strings.TrimLeft(num, "0")
 	}
-	smalest := num
-	numString := fmt.Sprintf("%d", num)
-	stringLength := len(numString)
 
-	for pos, val := range numString {
-		multFact := stringLength - pos - 1
-		valInt := int(val) - 48
-		valPosInt := valInt * int(math.Pow10(multFact))
-		tempNum := num - valPosInt
-		if tempNum < 0 {
-			continue
-		}
-		candidate := recurse(tempNum, k-1)
+	smalest := makeInt(num)
 
+	for pos := range num {
+		curString := num[:pos] + num[pos+1:]
+		candidate := makeInt(removeKdigits(curString, k-1))
 		if smalest > candidate {
 			smalest = candidate
 		}
-	}
 
-	return smalest
+	}
+	return fmt.Sprintf("%d", smalest)
 }
